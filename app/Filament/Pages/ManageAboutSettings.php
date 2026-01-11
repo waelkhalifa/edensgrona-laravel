@@ -2,54 +2,89 @@
 
 namespace App\Filament\Pages;
 
-use App\Settings\GeneralSettings;
+use App\Settings\AboutSettings;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Pages\SettingsPage;
 
-class ManageGeneralSettings extends SettingsPage
+class ManageAboutSettings extends SettingsPage
 {
-    protected static ?string $navigationIcon = 'heroicon-o-cog-6-tooth';
+    protected static ?string $navigationIcon = 'heroicon-o-information-circle';
 
     protected static ?string $navigationGroup = 'Settings';
 
     protected static ?int $navigationSort = 2;
 
-    protected static string $settings = GeneralSettings::class;
+    protected static string $settings = AboutSettings::class;
 
-    protected static ?string $title = 'General Settings';
+    protected static ?string $title = 'About Page';
 
-    protected static ?string $navigationLabel = 'General';
+    protected static ?string $navigationLabel = 'About Page';
 
     public function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\Section::make('Site Information')
-                                        ->description('Manage general site settings')
+                Forms\Components\Section::make('Page Header')
+                                        ->description('Main heading and subtitle for the about page')
+                                        ->icon('heroicon-o-document-text')
                                         ->schema([
-                                            Forms\Components\TextInput::make('site_title')
+                                            Forms\Components\TextInput::make('title')
                                                                       ->required()
                                                                       ->maxLength(255)
-                                                                      ->label('Site Title')
-                                                                      ->placeholder('Edens Gröna')
-                                                                      ->helperText('The main title of your website'),
-
-                                            Forms\Components\TextInput::make('google_reviews_url')
-                                                                      ->required()
-                                                                      ->url()
-                                                                      ->maxLength(500)
-                                                                      ->label('Google Reviews URL')
-                                                                      ->placeholder('https://www.google.com/...')
-                                                                      ->helperText('Link to your Google Business reviews')
+                                                                      ->label('Page Title')
+                                                                      ->placeholder('Om oss')
                                                                       ->columnSpanFull(),
 
-                                            Forms\Components\TextInput::make('footer_text')
-                                                                      ->required()
+                                            Forms\Components\TextInput::make('subtitle')
                                                                       ->maxLength(255)
-                                                                      ->label('Footer Copyright Text')
-                                                                      ->placeholder('© 2025 - Utvecklad av Multicaret Inc.')
-                                                                      ->helperText('Text displayed in the website footer'),
+                                                                      ->label('Subtitle')
+                                                                      ->placeholder('Kunskap, kärlek och kvalitet i varje detalj')
+                                                                      ->columnSpanFull(),
+                                        ]),
+
+                Forms\Components\Section::make('About Image')
+                                        ->description('Upload the main about page image')
+                                        ->icon('heroicon-o-photo')
+                                        ->schema([
+                                            Forms\Components\FileUpload::make('image_path')
+                                                                       ->label('About Us Image')
+                                                                       ->image()
+                                                                       ->imageEditor()
+                                                                       ->imageEditorAspectRatios([
+                                                                           '16:9',
+                                                                           '4:3',
+                                                                           '1:1',
+                                                                       ])
+                                                                       ->maxSize(10240)
+                                                                       ->directory('about')
+                                                                       ->visibility('public')
+                                                                       ->helperText('Upload the main about page image (max 10MB)')
+                                                                       ->columnSpanFull(),
+                                        ]),
+
+                Forms\Components\Section::make('Content')
+                                        ->description('Main content for the about page')
+                                        ->icon('heroicon-o-document-text')
+                                        ->schema([
+                                            Forms\Components\RichEditor::make('content')
+                                                                       ->required()
+                                                                       ->label('About Content')
+                                                                       ->toolbarButtons([
+                                                                           'bold',
+                                                                           'italic',
+                                                                           'underline',
+                                                                           'strike',
+                                                                           'link',
+                                                                           'heading',
+                                                                           'bulletList',
+                                                                           'orderedList',
+                                                                           'blockquote',
+                                                                           'codeBlock',
+                                                                           'undo',
+                                                                           'redo',
+                                                                       ])
+                                                                       ->columnSpanFull(),
                                         ]),
             ]);
     }

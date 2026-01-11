@@ -4,14 +4,14 @@ namespace App\Settings;
 
 use Spatie\LaravelSettings\Settings;
 
-class GeneralSettings extends Settings
+class AboutSettings extends Settings
 {
-    public string $site_title;
-    public string $google_reviews_url;
-    public string $footer_text;
-
+    public string $title;
+    public ?string $subtitle;
+    public string $content;
+    public ?string $image_path;
     public static function group(): string
     {
-        return 'general';
+        return 'about';
     }
 }

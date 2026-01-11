@@ -4,14 +4,19 @@ namespace App\Settings;
 
 use Spatie\LaravelSettings\Settings;
 
-class GeneralSettings extends Settings
+class ContactSettings extends Settings
 {
-    public string $site_title;
-    public string $google_reviews_url;
-    public string $footer_text;
+    public string $email;
+    public string $phone;
+    public string $address;
 
     public static function group(): string
     {
-        return 'general';
+        return 'contact';
+    }
+
+    public static function encrypted(): array
+    {
+        return [];
     }
 }
