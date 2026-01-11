@@ -1,26 +1,61 @@
+# Dependencies
 /node_modules
+/vendor
+
+# Laravel specific
 /public/hot
 /public/storage
-/public/*.xml
-/public/*/*.xml
 /storage/*.key
 /storage/pail
-/vendor
+/bootstrap/cache/*
+
+# Environment files
 .env
 .env.backup
 .env.production
-.phpactor.json
-.phpunit.result.cache
-Homestead.json
-Homestead.yaml
-npm-debug.log
-yarn-error.log
-/auth.json
-composer.lock
-yarn.lock
-package-lock.json
+.env.local
+.env.*.local
 
+# IDE files
 /.idea
 /.vscode
 /.nova
 /.zed
+.phpactor.json
+
+# Testing
+.phpunit.result.cache
+/coverage
+
+# Build files
+/public/build
+/public/mix-manifest.json
+/public/*.xml
+/public/*/*.xml
+
+# Logs
+npm-debug.log
+yarn-error.log
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Laravel specific files
+Homestead.json
+Homestead.yaml
+/auth.json
+
+# Lock files
+composer.lock
+yarn.lock
+package-lock.json
+
+# Uploaded files (if you don't want to commit them)
+/storage/app/public/*
+!/storage/app/public/.gitignore
+
+# Media library files
+/public/media/*
+!/public/media/.gitignore
