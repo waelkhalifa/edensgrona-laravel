@@ -14,7 +14,6 @@ use App\Settings\ContactSettings;
 use App\Settings\GeneralSettings;
 use App\Settings\HeroSettings;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
@@ -55,8 +54,29 @@ class HomeController extends Controller
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'email' => 'required|email|max:255',
-            'phone' => 'nullable|string|max:255',
-            'message' => 'required|string',
+            'phone' => 'required|string|max:255',
+            'address' => 'required|string|max:255',
+            'city' => 'required|string|max:255',
+            'postal_code' => 'required|string|max:20',
+            'customer_type' => 'required|in:private,company',
+            'help_needed' => 'required|string',
+            'measurements' => 'nullable|string',
+            'message' => 'nullable|string',
+            'attachments' => 'nullable|array',
+            'attachments.*' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:10240',
+        ], [
+            'first_name.required' => 'Förnamn är obligatoriskt',
+            'last_name.required' => 'Efternamn är obligatoriskt',
+            'email.required' => 'E-post är obligatoriskt',
+            'email.email' => 'Ogiltig e-postadress',
+            'phone.required' => 'Telefonnummer är obligatoriskt',
+            'address.required' => 'Adress är obligatoriskt',
+            'city.required' => 'Stad/tätort är obligatoriskt',
+            'postal_code.required' => 'Postnummer är obligatoriskt',
+            'customer_type.required' => 'Vänligen välj kundtyp',
+            'help_needed.required' => 'Vänligen berätta vad du behöver hjälp med',
+            'attachments.*.mimes' => 'Endast JPG, PNG och PDF filer är tillåtna',
+            'attachments.*.max' => 'Filen får inte vara större än 10MB',
         ]);
 
         if ($validator->fails()) {
@@ -65,50 +85,54 @@ class HomeController extends Controller
                              ->withInput();
         }
 
-        try {
-            // Save to database
+//        try {
             $submission = ContactSubmission::create([
                 'first_name' => $request->first_name,
                 'last_name' => $request->last_name,
                 'email' => $request->email,
                 'phone' => $request->phone,
+                'address' => $request->address,
+                'city' => $request->city,
+                'postal_code' => $request->postal_code,
+                'customer_type' => $request->customer_type,
+                'help_needed' => $request->help_needed,
+                'measurements' => $request->measurements,
                 'message' => $request->message,
                 'status' => 'new',
             ]);
 
-            // Send to external endpoint (if you have one)
-            try {
-                $response = Http::timeout(10)->post('https://formspree.io/f/mvgkbaej', [
-                    'first_name' => $request->first_name,
-                    'last_name' => $request->last_name,
-                    'email' => $request->email,
-                    'phone' => $request->phone,
-                    'message' => $request->message,
-                ]);
+            // Handle file attachments
+            if ($request->hasFile('attachments')) {
+                foreach ($request->file('attachments') as $file) {
+                    try {
+                        $submission->addMedia($file)
+                                   ->preservingOriginal()
+                                   ->toMediaCollection('attachments');
 
-                // Log the response for debugging
-                Log::info('Contact form sent to endpoint', [
-                    'status' => $response->status(),
-                    'body' => $response->body(),
-                ]);
-
-            } catch (\Exception $e) {
-                // Log error but don't fail the submission
-                Log::error('Failed to send contact form to endpoint', [
-                    'error' => $e->getMessage(),
-                ]);
+                        Log::info('File uploaded successfully', [
+                            'submission_id' => $submission->id,
+                            'file_name' => $file->getClientOriginalName(),
+                        ]);
+                    } catch (\Exception $e) {
+                        Log::error('Failed to upload attachment', [
+                            'error' => $e->getMessage(),
+                            'file' => $file->getClientOriginalName(),
+                        ]);
+                    }
+                }
             }
 
             return redirect()->back()->with('success', 'Tack för ditt meddelande! Vi hör av oss inom kort.');
 
-        } catch (\Exception $e) {
+        } /*catch (\Exception $e) {
             Log::error('Failed to save contact submission', [
                 'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
             ]);
 
             return redirect()->back()
                              ->with('error', 'Ett fel uppstod. Vänligen försök igen.')
                              ->withInput();
-        }
-    }
+        }*/
+//    }
 }
