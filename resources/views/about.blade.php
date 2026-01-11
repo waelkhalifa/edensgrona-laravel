@@ -77,7 +77,7 @@
         <div class="card shadow-lg border-0"
              style="border-radius: 20px; background: linear-gradient(135deg, #4CAF50 0%, #388E3C 100%); overflow: hidden;">
             <div class="card-body p-5 text-center text-white">
-                <h2 class="fw-bold mb-3">Redo att börja ditt projekt?</h2>
+                <h2 class="fw-bold mb-3 text-white">Redo att börja ditt projekt?</h2>
                 <p class="lead mb-4">Kontakta oss idag för en kostnadsfri konsultation och offert</p>
                 <div class="d-flex gap-3 justify-content-center flex-wrap">
                     <a href="{{ route('contact') }}" class="btn btn-light btn-lg px-5 py-3 shadow"
