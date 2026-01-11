@@ -10,8 +10,12 @@ use App\Models\ProcessStep;
 use App\Models\Service;
 use App\Models\Setting;
 use App\Settings\AboutSettings;
+use App\Settings\ContactSettings;
+use App\Settings\GeneralSettings;
 use App\Settings\HeroSettings;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class HomeController extends Controller
@@ -39,13 +43,10 @@ class HomeController extends Controller
         ]);
     }
 
-    public function contact()
+    public function contact(ContactSettings $contactSettings, GeneralSettings $generalSettings)
     {
-        $contactInfo = ContactInfo::first();
-        $socialLinks = SocialLink::where('is_active', true)->orderBy('order')->get();
-        $reviewsUrl = Setting::get('google_reviews_url', '#');
 
-        return view('contact', compact('contactInfo', 'socialLinks', 'reviewsUrl'));
+        return view('contact', compact('contactSettings', 'generalSettings'));
     }
 
     public function submitContact(Request $request)
@@ -64,15 +65,50 @@ class HomeController extends Controller
                              ->withInput();
         }
 
-        ContactSubmission::create([
-            'first_name' => $request->first_name,
-            'last_name' => $request->last_name,
-            'email' => $request->email,
-            'phone' => $request->phone,
-            'message' => $request->message,
-            'status' => 'new',
-        ]);
+        try {
+            // Save to database
+            $submission = ContactSubmission::create([
+                'first_name' => $request->first_name,
+                'last_name' => $request->last_name,
+                'email' => $request->email,
+                'phone' => $request->phone,
+                'message' => $request->message,
+                'status' => 'new',
+            ]);
 
-        return redirect()->back()->with('success', 'Tack för ditt meddelande! Vi hör av oss inom kort.');
+            // Send to external endpoint (if you have one)
+            try {
+                $response = Http::timeout(10)->post('https://formspree.io/f/mvgkbaej', [
+                    'first_name' => $request->first_name,
+                    'last_name' => $request->last_name,
+                    'email' => $request->email,
+                    'phone' => $request->phone,
+                    'message' => $request->message,
+                ]);
+
+                // Log the response for debugging
+                Log::info('Contact form sent to endpoint', [
+                    'status' => $response->status(),
+                    'body' => $response->body(),
+                ]);
+
+            } catch (\Exception $e) {
+                // Log error but don't fail the submission
+                Log::error('Failed to send contact form to endpoint', [
+                    'error' => $e->getMessage(),
+                ]);
+            }
+
+            return redirect()->back()->with('success', 'Tack för ditt meddelande! Vi hör av oss inom kort.');
+
+        } catch (\Exception $e) {
+            Log::error('Failed to save contact submission', [
+                'error' => $e->getMessage(),
+            ]);
+
+            return redirect()->back()
+                             ->with('error', 'Ett fel uppstod. Vänligen försök igen.')
+                             ->withInput();
+        }
     }
 }

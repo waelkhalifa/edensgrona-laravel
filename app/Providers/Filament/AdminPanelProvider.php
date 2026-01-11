@@ -5,6 +5,7 @@ namespace App\Providers\Filament;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Filament\Navigation\NavigationGroup;
 use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
@@ -37,7 +38,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
-                Widgets\AccountWidget::class,
+//                Widgets\AccountWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,
@@ -52,6 +53,20 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
+            ])
+            ->navigationGroups([
+                NavigationGroup::make()
+                               ->label('Content')
+//                               ->icon('heroicon-o-document-text')
+                               ->collapsed(false),
+/*                NavigationGroup::make()
+                               ->label('Content Management')
+//                               ->icon('heroicon-o-document-text')
+                               ->collapsed(false)*/
+                NavigationGroup::make()
+                               ->label('Settings')
+//                               ->icon('heroicon-o-cog-6-tooth')
+                               ->collapsed(false),
             ])
             ->brandName('Edens Gröna Admin')
             ->favicon(asset('assets/img/logo-img/logo.jpg'));

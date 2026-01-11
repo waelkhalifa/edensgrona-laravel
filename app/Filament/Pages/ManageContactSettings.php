@@ -36,11 +36,6 @@ class ManageContactSettings extends SettingsPage
                                                                       ->required()
                                                                       ->tel()
                                                                       ->label('Phone Number'),
-
-                                            Forms\Components\Textarea::make('address')
-                                                                     ->required()
-                                                                     ->rows(3)
-                                                                     ->label('Physical Address'),
                                         ]),
 
             ]);

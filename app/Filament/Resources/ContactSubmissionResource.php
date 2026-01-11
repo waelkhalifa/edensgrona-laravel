@@ -16,54 +16,61 @@ class ContactSubmissionResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-envelope';
 
-    protected static ?string $navigationGroup = 'Content Management';
+    protected static ?string $navigationGroup = 'Content';
 
-    protected static ?int $navigationSort = 5;
+    protected static ?string $navigationLabel = 'Contact Submissions';
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::where('status', 'new')->count();
+    }
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\Section::make('Contact Details')
-                    ->schema([
-                        Forms\Components\TextInput::make('first_name')
-                            ->required()
-                            ->maxLength(255),
-                        Forms\Components\TextInput::make('last_name')
-                            ->required()
-                            ->maxLength(255),
-                        Forms\Components\TextInput::make('email')
-                            ->email()
-                            ->required()
-                            ->maxLength(255),
-                        Forms\Components\TextInput::make('phone')
-                            ->tel()
-                            ->maxLength(255),
-                    ])->columns(2),
-                
-                Forms\Components\Section::make('Message')
-                    ->schema([
-                        Forms\Components\Textarea::make('message')
-                            ->required()
-                            ->rows(4)
-                            ->columnSpanFull(),
-                    ]),
-                
-                Forms\Components\Section::make('Status')
-                    ->schema([
-                        Forms\Components\Select::make('status')
-                            ->options([
-                                'new' => 'New',
-                                'read' => 'Read',
-                                'in_progress' => 'In Progress',
-                                'resolved' => 'Resolved',
-                            ])
-                            ->default('new')
-                            ->required(),
-                        Forms\Components\Textarea::make('notes')
-                            ->rows(3)
-                            ->columnSpanFull(),
-                    ]),
+                Forms\Components\Section::make()
+                                        ->columns()
+                                        ->schema([
+                                            Forms\Components\TextInput::make('first_name')
+                                                                      ->required()
+                                                                      ->maxLength(255)
+                                                                      ->disabled(),
+
+                                            Forms\Components\TextInput::make('last_name')
+                                                                      ->required()
+                                                                      ->maxLength(255)
+                                                                      ->disabled(),
+
+                                            Forms\Components\TextInput::make('email')
+                                                                      ->email()
+                                                                      ->required()
+                                                                      ->maxLength(255)
+                                                                      ->disabled(),
+
+                                            Forms\Components\TextInput::make('phone')
+                                                                      ->tel()
+                                                                      ->maxLength(255)
+                                                                      ->disabled(),
+
+                                            Forms\Components\Textarea::make('message')
+                                                                     ->required()
+                                                                     ->disabled()
+                                                                     ->columnSpanFull(),
+
+                                            Forms\Components\Select::make('status')
+                                                                   ->options([
+                                                                       'new' => 'New',
+                                                                       'read' => 'Read',
+                                                                       'replied' => 'Replied',
+                                                                       'archived' => 'Archived',
+                                                                   ])
+                                                                   ->required(),
+
+                                            Forms\Components\Textarea::make('notes')
+                                                                     ->rows(3)
+                                                                     ->columnSpanFull(),
+                                        ])
             ]);
     }
 
@@ -71,39 +78,48 @@ class ContactSubmissionResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('first_name')
-                    ->searchable()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('last_name')
-                    ->searchable()
-                    ->sortable(),
+                Tables\Columns\TextColumn::make('full_name')
+                                         ->label('Name')
+                                         ->searchable(['first_name', 'last_name'])
+                                         ->weight('bold'),
+
                 Tables\Columns\TextColumn::make('email')
-                    ->searchable(),
+                                         ->searchable()
+                                         ->copyable(),
+
                 Tables\Columns\TextColumn::make('phone')
-                    ->searchable(),
-                Tables\Columns\BadgeColumn::make('status')
-                    ->colors([
-                        'gray' => 'new',
-                        'info' => 'read',
-                        'warning' => 'in_progress',
-                        'success' => 'resolved',
-                    ]),
+                                         ->searchable()
+                                         ->copyable(),
+
+                Tables\Columns\TextColumn::make('message')
+                                         ->limit(50)
+                                         ->searchable(),
+
+                Tables\Columns\TextColumn::make('status')
+                                         ->badge()
+                                         ->colors([
+                                             'warning' => 'new',
+                                             'primary' => 'read',
+                                             'success' => 'replied',
+                                             'secondary' => 'archived',
+                                         ]),
+
                 Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable(),
+                                         ->dateTime()
+                                         ->sortable(),
             ])
             ->defaultSort('created_at', 'desc')
             ->filters([
                 Tables\Filters\SelectFilter::make('status')
-                    ->options([
-                        'new' => 'New',
-                        'read' => 'Read',
-                        'in_progress' => 'In Progress',
-                        'resolved' => 'Resolved',
-                    ]),
+                                           ->options([
+                                               'new' => 'New',
+                                               'read' => 'Read',
+                                               'replied' => 'Replied',
+                                               'archived' => 'Archived',
+                                           ]),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
+//                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([

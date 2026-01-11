@@ -35,6 +35,15 @@ class ManageGeneralSettings extends SettingsPage
                                                                       ->placeholder('Edens Gröna')
                                                                       ->helperText('The main title of your website'),
 
+                                            Forms\Components\Textarea::make('postal_address')
+                                                                     ->required()
+                                                                     ->maxLength(255)
+                                                                     ->label('Postal Address')
+                                                                     ->placeholder('Per Anders väg 1 24561 Staffanstorp'),
+                                            Forms\Components\Textarea::make('visiting_address')
+                                                                     ->required()
+                                                                     ->maxLength(255)
+                                                                     ->placeholder('Tirupsvägen 99, 245 93 Staffanstorp'),
                                             Forms\Components\TextInput::make('google_reviews_url')
                                                                       ->required()
                                                                       ->url()
@@ -43,13 +52,12 @@ class ManageGeneralSettings extends SettingsPage
                                                                       ->placeholder('https://www.google.com/...')
                                                                       ->helperText('Link to your Google Business reviews')
                                                                       ->columnSpanFull(),
-
-                                            Forms\Components\TextInput::make('footer_text')
+                                            /*Forms\Components\TextInput::make('footer_text')
                                                                       ->required()
                                                                       ->maxLength(255)
                                                                       ->label('Footer Copyright Text')
                                                                       ->placeholder('© 2025 - Utvecklad av Multicaret Inc.')
-                                                                      ->helperText('Text displayed in the website footer'),
+                                                                      ->helperText('Text displayed in the website footer'),*/
                                         ]),
             ]);
     }

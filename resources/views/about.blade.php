@@ -37,37 +37,40 @@
 
 @endsection
 
-<style>
-    .about-content p {
-        margin-bottom: 1rem;
-    }
+@push('styles')
+    <style>
+        .about-content p {
+            margin-bottom: 1rem;
+        }
 
-    .about-content h2,
-    .about-content h3 {
-        color: var(--mygreen);
-        margin-top: 1.5rem;
-        margin-bottom: 1rem;
-    }
+        .about-content h2,
+        .about-content h3 {
+            color: var(--mygreen);
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+        }
 
-    .about-content ul,
-    .about-content ol {
-        margin-left: 1.5rem;
-        margin-bottom: 1rem;
-    }
+        .about-content ul,
+        .about-content ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
 
-    .about-content a {
-        color: var(--mygreen);
-        text-decoration: underline;
-    }
+        .about-content a {
+            color: var(--mygreen);
+            text-decoration: underline;
+        }
 
-    .about-content a:hover {
-        color: var(--mygreen-dark);
-    }
+        .about-content a:hover {
+            color: var(--mygreen-dark);
+        }
 
-    .about-us-img img {
-        width: 100%;
-        height: auto;
-        border-radius: 8px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
-</style>
+        .about-us-img img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+@endpush
+

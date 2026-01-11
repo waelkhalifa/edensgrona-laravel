@@ -1,4 +1,8 @@
-{{-- resources/views/layouts/partials/footer.blade.php --}}
+@php use App\Settings\ContactSettings;use App\Settings\GeneralSettings; @endphp
+@php
+    $generalSettings =  app(GeneralSettings::class);
+    $contactSettings =  app(ContactSettings::class);
+@endphp
 <footer>
     <div class="container">
         <div class="row pt-7">
@@ -19,20 +23,20 @@
             <div class="col-md-4 col-sm-12">
                 <h5 class="mb-1 text-white">Kontakta oss</h5>
                 <div class="text-white">
-                    <b>Postadress</b>: Per Anders väg 1 24561 Staffanstorp
+                    <b>Postadress</b>: {{$generalSettings->postal_address}}
                     <br>
-                    <b>Besöksadress</b>: Tirupsvägen 99, 245 93 Staffanstorp
+                    <b>Besöksadress</b>: {{$generalSettings->visiting_address}}
                 </div>
                 <div class="text-white">
                     <b>E-post</b>:
-                    <a href="mailto:info@edensgrona.se" class="white">
-                        info@edensgrona.se
+                    <a href="mailto:{{$contactSettings->email}}" class="white">
+                        {{$contactSettings->email}}
                     </a>
                 </div>
                 <div class="text-white">
                     <b>Mobil</b>:
-                    <a href="tel:0760492828" class="white">
-                        076-049 28 28
+                    <a href="tel:{{$contactSettings->phone}}" class="white">
+                        {{$contactSettings->phone}}
                     </a>
                 </div>
             </div>

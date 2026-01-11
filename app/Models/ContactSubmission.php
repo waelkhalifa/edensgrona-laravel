@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class ContactSubmission extends Model
 {
@@ -19,7 +19,21 @@ class ContactSubmission extends Model
         'notes',
     ];
 
-    protected $casts = [
-        'created_at' => 'datetime',
-    ];
+    // Accessor for full name
+    public function getFullNameAttribute(): string
+    {
+        return "{$this->first_name} {$this->last_name}";
+    }
+
+    // Check if submission is new
+    public function isNew(): bool
+    {
+        return $this->status === 'new';
+    }
+
+    // Mark as read
+    public function markAsRead(): void
+    {
+        $this->update(['status' => 'read']);
+    }
 }

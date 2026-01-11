@@ -27,22 +27,22 @@ class SocialLinkResource extends Resource
                 Forms\Components\TextInput::make('platform')
                     ->required()
                     ->maxLength(255),
-                
+
                 Forms\Components\TextInput::make('url')
                     ->required()
                     ->url()
                     ->maxLength(255)
                     ->columnSpanFull(),
-                
+
                 Forms\Components\TextInput::make('icon')
                     ->maxLength(255)
                     ->helperText('Font Awesome icon class (e.g., fa-brands fa-facebook)'),
-                
+
                 Forms\Components\TextInput::make('order')
                     ->numeric()
                     ->default(0)
                     ->required(),
-                
+
                 Forms\Components\Toggle::make('is_active')
                     ->default(true)
                     ->required(),
